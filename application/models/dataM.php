@@ -74,6 +74,11 @@ class dataM extends CI_Model
     $query = $this->db->get('dataikan');
     return $query->result_array();
   }
+  function getDataIkanAll(){
+    $this->db->flush_cache();
+    $query = $this->db->get('dataikan');
+    return $query->result_array();
+  }
   function updateCentroid($centroid){
     $this->db->flush_cache();
     $this->db->empty_table('centroid');

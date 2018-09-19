@@ -95,7 +95,7 @@ class data extends CI_Controller
       $beratot=$this->tofloat($data[$i][8]);
       $hargatot=$this->tofloat($data[$i][9]);
       if($beratot!=0){
-        $hargaperkg=$hargatot/$beratot;
+        $hargaperkg=round(($hargatot/$beratot),2);
         $this->dataM->inputDataIkan($data[$i][1],$beratot,$hargatot,$hargaperkg,$bulan,$tahun);
       }
       //echo $data[$i][1].'-'.$beratot.'-'.$hargatot.'-'.$hargaperkg.'-'.$bulan.'-'.$tahun.'<br>';
@@ -141,8 +141,8 @@ class data extends CI_Controller
     $minharga=$this->getMinHarga();
     $data=$this->dataM->getHargaBerat();
     foreach ($data as $key => $value) {
-      $harganormal=(($value->hperkg - $minharga)/($maxharga-$minharga));
-      $beratnormal=(($value->berat - $minberat)/($maxberat-$minberat));
+      $harganormal=(($value->hperkg - $minharga)/($maxharga-$minharga))*10000;
+      $beratnormal=(($value->berat - $minberat)/($maxberat-$minberat))*10000;
       $this->dataM->updateDataNormal($value->id,$harganormal,$beratnormal);
       echo $value->hperkg.'-'.$minharga.'/'.$maxharga.'-'.$minharga.'='.$harganormal;
       echo '<br>';
@@ -150,6 +150,9 @@ class data extends CI_Controller
 
   }
   function kMeansLoop($data,$centroid){
+    foreach ($centroid as $key => $value) {
+        $anggotaKluster[$key]=[];
+    }
     foreach ($data as $keyData => $valueData) {
       # code...
       foreach ($centroid as $keyCentro => $valueCentro) {
@@ -167,9 +170,13 @@ class data extends CI_Controller
     foreach ($centroid as $key => $value) {
       # code...
       if(empty($anggotaKluster[$key])){
-        $anggotaKluster[$key]['x']=rand(1000000000,1)/1000000000;
-        $anggotaKluster[$key]['y']=rand(1000000000,1)/1000000000;
+        echo 'empty'.$key.'<br>';
+        echo $data[rand((count($data)-1),0)]['berat_normal'];
+        echo $data[rand((count($data)-1),0)]['hperkg_normal'];
+        $newCentro[$key]['x']=$data[rand((count($data)-1),0)]['berat_normal'];
+        $newCentro[$key]['y']=$data[rand((count($data)-1),0)]['hperkg_normal'];
         $diff++;
+
       }else{
         $newCentro[$key]['x']=array_sum($anggotaKluster[$key]['x'])/count($anggotaKluster[$key]['x']);
         $newCentro[$key]['y']=array_sum($anggotaKluster[$key]['y'])/count($anggotaKluster[$key]['y']);
@@ -189,11 +196,11 @@ class data extends CI_Controller
     }
   }
   function kMeans($k){
-    for($i=0;$i<$k;$i++){
-      $centroid[$i]['x']=rand(1000000000,1)/1000000000;
-      $centroid[$i]['y']=rand(1000000000,1)/1000000000;
-    }
     $data=$this->dataM->getDataIkan();
+    for($i=0;$i<$k;$i++){
+      $centroid[$i]['x']=$data[rand((count($data)-1),0)]['berat_normal'];
+      $centroid[$i]['y']=$data[rand((count($data)-1),0)]['hperkg_normal'];
+    }
     $this->kMeansLoop($data,$centroid);
 
   }
@@ -222,6 +229,19 @@ class data extends CI_Controller
     }
     echo json_encode($array);
   }
+  function getData2(){
+    $data=$this->dataM->getDataIkanAll();
+    echo json_encode($data);
+  }
+  function getDataD3(){
+    $dataKluster=$this->dataM->getAnggotaKluster(1);
+    foreach ($dataKluster as $keyklus => $valueklus) {
+      $korditat[]= array('x' => $valueklus['jenis'],
+                          'y'=> $valueklus['hperkg']);
+    }
+    echo json_encode($korditat);
+  }
+
   function input(){
     $this->load->view('input');
   }
