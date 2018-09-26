@@ -6,6 +6,11 @@ class dataM extends CI_Model
 {
   function inputDataIkan($nama,$beratot,$hargatot,$hargaperkg,$bulan,$tahun){
     $this->db->flush_cache();
+    $this->db->where('jenis', $nama);
+    $this->db->where('bulan', $bulan);
+    $this->db->where('tahun', $tahun);
+    $this->db->delete('dataikan');
+    $this->db->flush_cache();
     $data = array(
         'jenis' => $nama,
         'berat'  => $beratot,
@@ -14,7 +19,7 @@ class dataM extends CI_Model
         'bulan'  => $bulan,
         'tahun'  => $tahun
         );
-    $this->db->replace('dataikan',$data);
+    $this->db->insert('dataikan',$data);
   }
   function getMaxHarga(){
     $this->db->flush_cache();
@@ -51,6 +56,13 @@ class dataM extends CI_Model
     return $query->result();
 
   }
+  function getSSE()
+  {
+    // code...
+    $this->db->flush_cache();
+    $query = $this->db->get('daftarsse');
+    return $query->result();
+  }
   function updateDataNormal($id,$harga,$berat){
     $data = array(
         'hperkg_normal' => $harga,
@@ -59,6 +71,14 @@ class dataM extends CI_Model
       $this->db->flush_cache();
       $this->db->where('id', $id);
       $this->db->update('dataikan', $data);
+  }
+  function updateDaftarSSE($k,$sse){
+    $data = array(
+        'k' => $k,
+        'sse' => $sse
+      );
+    $this->db->flush_cache();
+    $this->db->replace('daftarsse', $data);
   }
   function updateDataKluster($id,$kluster){
     $data = array(

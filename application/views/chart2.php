@@ -3,25 +3,51 @@
 <!----------------------------------------------------------------->
 <!DOCTYPE html>
 <meta charset="utf-8">
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
 <html>
-<div id="chartContainer">
-  <script src="http://d3js.org/d3.v4.min.js"></script>
-  <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
+<div id="chartDis"></div>
+<div id="chartSse"></div>
+
   <script type="text/javascript">
   fetch("<?php echo base_url('data/getdata2/')?>")
     .then((resp) => resp.json()) //convert to json
     .then(function(data) {
     // do somthing with data
-    draw(data);
+    drawDis(data);
   });
-  function draw(data){
-    var svg = dimple.newSvg("#chartContainer", 590, 400);
+  fetch("<?php echo base_url('data/getsse/')?>")
+    .then((resp) => resp.json()) //convert to json
+    .then(function(data) {
+    // do somthing with data
+    drawSse(data);
+  });
+  function drawSse(data){
+    var svg = dimple.newSvg("#chartSse", 1200, 500);
       // Create the chart
         // Latest period only
         //dimple.filterData(data, "Date", "01/12/2012");
         // Create the chart
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(120, 50, 420, 330)
+        myChart.setBounds(100, 50, 1000, 300)
+        //console.log(myChart.data);
+        // Create a standard bubble of SKUs by Price and Sales Value
+        // We are coloring by Owner as that will be the key in the legend
+        myChart.addCategoryAxis("x", "k");
+        myChart.addMeasureAxis("y", "sse");
+        //myChart.addAxis("z","id");
+        mySeries = myChart.addSeries(null, dimple.plot.line);
+        var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
+        myChart.draw();
+  }
+  function drawDis(data){
+    var svg = dimple.newSvg("#chartDis", 1200, 400);
+      // Create the chart
+        // Latest period only
+        //dimple.filterData(data, "Date", "01/12/2012");
+        // Create the chart
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(100, 50, 1000, 300)
         //console.log(myChart.data);
         // Create a standard bubble of SKUs by Price and Sales Value
         // We are coloring by Owner as that will be the key in the legend
@@ -29,7 +55,7 @@
         myChart.addMeasureAxis("y", "hperkg");
         //myChart.addAxis("z","id");
         mySeries = myChart.addSeries(["berat","bulan","jenis","tahun", "hperkg", "kluster"], dimple.plot.bubble);
-        var myLegend = myChart.addLegend(530, 100, 60, 300, "Right");
+        var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
         myChart.draw();
         mySeries.getTooltipText = function (e) {
         //  console.log(Object.getOwnPropertyNames(e))
@@ -55,10 +81,10 @@
         // object to split it onto 2 lines.  This technique works with any
         // number of lines, it isn't dimple specific.
         svg.selectAll("title_text")
-          .data(["Click legend to","show/hide owners:"])
+          .data(["Daftar","Kluster:"])
           .enter()
           .append("text")
-            .attr("x", 499)
+            .attr("x", 1120)
             .attr("y", function (d, i) { return 90 + i * 14; })
             .style("font-family", "sans-serif")
             .style("font-size", "10px")
@@ -111,5 +137,4 @@
   }
 
   </script>
-</div>
 </html>

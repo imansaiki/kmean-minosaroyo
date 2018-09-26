@@ -50,23 +50,27 @@ class data extends CI_Controller
       }
       return $data;
   }
-  function readCSV($bulan,$tahun){
+  function readCSV(){
     $config['upload_path']          = './';
     $config['allowed_types']        = 'csv';
-    $config['file_name']          = $bulan.'_'.$tahun.'.csv';
+    $config['overwrite']            = TRUE;
+    //$config['file_name']          = $bulan.'_'.$tahun.'.csv';
     $this->load->library('upload', $config);
       if ( ! $this->upload->do_upload('upcsv')){
-          $error = array('error' => $this->upload->display_errors());
-          echo 'gagal';
-          $this->load->view('input', $error);
-      }
-      else{
-          $data = array('upload_data' => $this->upload->data());
-          echo 'berhasil';
+          $data = array('error' => $this->upload->display_errors());
+          $this->session->set_flashdata('msg',' gagal di upload') ;
           $this->load->view('input', $data);
       }
-    $array_ret=$this->csv_to_array($bulan.'_'.$tahun.'.csv',';');
-    unlink($config['file_name']);
+      else{
+          $data = $this->upload->data();
+          $this->session->set_flashdata('msg',$data['file_name'].' berhasil di upload') ;
+          $this->load->view('input', $data);
+      }
+    $array_ret['data']=$this->csv_to_array($data['file_name'],';');
+    $piece=explode('_',$data['file_name']);
+    $array_ret['bulan']=$piece[0];
+    $array_ret['tahun']=substr($piece[1],0,-4);
+    unlink($data['file_name']);
     return $array_ret;
 
   }
@@ -88,19 +92,18 @@ class data extends CI_Controller
   }
 
   function inputData(){
-    $bulan=$this->input->post('bulan');
-    $tahun=$this->input->post('tahun');
-    $data=$this->readCSV($bulan,$tahun);
+    $data=$this->readCSV();
     for($i=71;$i<=115;$i++){
-      $beratot=$this->tofloat($data[$i][8]);
-      $hargatot=$this->tofloat($data[$i][9]);
+      $beratot=$this->tofloat($data['data'][$i][8]);
+      $hargatot=$this->tofloat($data['data'][$i][9]);
       if($beratot!=0){
         $hargaperkg=round(($hargatot/$beratot),2);
-        $this->dataM->inputDataIkan($data[$i][1],$beratot,$hargatot,$hargaperkg,$bulan,$tahun);
+        $this->dataM->inputDataIkan($data['data'][$i][1],$beratot,$hargatot,$hargaperkg,$data['bulan'],$data['tahun']);
       }
       //echo $data[$i][1].'-'.$beratot.'-'.$hargatot.'-'.$hargaperkg.'-'.$bulan.'-'.$tahun.'<br>';
 
     }
+    redirect(base_url('data/input'));
   }
   function jarakBulan($bulan1,$bulan2){
     $inc=array('Januari' => 1,
@@ -135,6 +138,7 @@ class data extends CI_Controller
     return $jaraknormal;
   }
   function normalisasiData(){
+    ini_set('max_execution_time', 300);
     $maxberat=$this->getMaxBerat();
     $minberat=$this->getMinBerat();
     $maxharga=$this->getMaxHarga();
@@ -150,9 +154,13 @@ class data extends CI_Controller
 
   }
   function kMeansLoop($data,$centroid){
+    $k=0;
     foreach ($centroid as $key => $value) {
         $anggotaKluster[$key]=[];
+        $k++;
     }
+    // init total sse disini
+    $sse=0;
     foreach ($data as $keyData => $valueData) {
       # code...
       foreach ($centroid as $keyCentro => $valueCentro) {
@@ -165,6 +173,8 @@ class data extends CI_Controller
       $data[$keyData]['kluster']= $klusterPilih;
       $anggotaKluster[$klusterPilih]['x'][]=$valueData['berat_normal'];
       $anggotaKluster[$klusterPilih]['y'][]=$valueData['hperkg_normal'];
+      //kumulatifkan sse disini
+      $sse+=min($jarak);
     }
     $diff=0;
     foreach ($centroid as $key => $value) {
@@ -191,11 +201,15 @@ class data extends CI_Controller
       foreach ($data as $key => $value) {
         # code...
         $this->dataM->updateDataKluster($value['id'],$value['kluster']);
+        //input sse dan k disini
       }
+      //input sse dan k disini
+      $this->dataM->updateDaftarSSE($k,$sse);
       $this->dataM->updateCentroid($newCentro);
     }
   }
   function kMeans($k){
+    ini_set('max_execution_time', 300);
     $data=$this->dataM->getDataIkan();
     for($i=0;$i<$k;$i++){
       $centroid[$i]['x']=$data[rand((count($data)-1),0)]['berat_normal'];
@@ -231,6 +245,12 @@ class data extends CI_Controller
   }
   function getData2(){
     $data=$this->dataM->getDataIkanAll();
+    echo json_encode($data);
+  }
+  function getSSE()
+  {
+    // code...
+    $data=$this->dataM->getSSE();
     echo json_encode($data);
   }
   function getDataD3(){
