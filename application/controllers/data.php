@@ -153,7 +153,7 @@ class data extends CI_Controller
     }
 
   }
-  function kMeansLoop($data,$centroid){
+  function kMeansLoop($data,$centroid,$loop=0){
     $k=0;
     foreach ($centroid as $key => $value) {
         $anggotaKluster[$key]=[];
@@ -196,7 +196,8 @@ class data extends CI_Controller
       }
     }
     if($diff>0){
-      $this->kMeansLoop($data,$newCentro);
+      $loop++;
+      $this->kMeansLoop($data,$newCentro,$loop);
     }else{
       foreach ($data as $key => $value) {
         # code...
@@ -206,17 +207,22 @@ class data extends CI_Controller
       //input sse dan k disini
       $this->dataM->updateDaftarSSE($k,$sse);
       $this->dataM->updateCentroid($newCentro);
+      echo $loop;
     }
+    return $loop;
   }
   function kMeans($k){
+    $start = microtime(true);
     ini_set('max_execution_time', 300);
     $data=$this->dataM->getDataIkan();
     for($i=0;$i<$k;$i++){
       $centroid[$i]['x']=$data[rand((count($data)-1),0)]['berat_normal'];
       $centroid[$i]['y']=$data[rand((count($data)-1),0)]['hperkg_normal'];
     }
-    $this->kMeansLoop($data,$centroid);
-
+    $loop=$this->kMeansLoop($data,$centroid);
+    $time = microtime(true)-$start;
+    echo $time;
+    echo $loop;
   }
   function getData(){
     $color=['#C0392B','#9B59B6','#2980B9','#1ABC9C','#F1C40F','#E67E22'];
