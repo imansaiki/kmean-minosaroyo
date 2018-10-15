@@ -1,63 +1,73 @@
 var color = ["pink","cyan","lime","olive","purple","red","green","blue","navy","magenta","yellow"];
+function clearChart() {
+
+}
 function drawCirBerat(data){
+  d3.select("#chartCirBerat").select("svg").remove();
   var svg = dimple.newSvg("#chartCirBerat", 1200, 500);
   var myChart = new dimple.chart(svg, data);
-  myChart.setBounds(20, 20, 460, 360)
+  myChart.setBounds(20, 20, 460, 360);
   myChart.addMeasureAxis("p", "berat");
   myChart.addSeries("kluster", dimple.plot.pie);
   myChart.addLegend(500, 20, 90, 300, "left");
+  var filterValues = dimple.getUniqueValues(data, "kluster");
+  filterValues.forEach(function (f) {
+    myChart.assignColor(f,color[f]);
+  });
   myChart.draw();
 }
 function drawCirHarga(data){
+  d3.select("#chartCirHarga").select("svg").remove();
   var svg = dimple.newSvg("#chartCirHarga", 1200, 500);
   var myChart = new dimple.chart(svg, data);
   myChart.setBounds(20, 20, 460, 360)
   myChart.addMeasureAxis("p", "harga");
   myChart.addSeries("kluster", dimple.plot.pie);
   myChart.addLegend(500, 20, 90, 300, "left");
+  var filterValues = dimple.getUniqueValues(data, "kluster");
+  filterValues.forEach(function (f) {
+    myChart.assignColor(f,color[f]);
+  });
   myChart.draw();
 }
 function drawBarBerat(data){
+  d3.select("#chartBarBerat").select("svg").remove();
   var svg = dimple.newSvg("#chartBarBerat", 1200, 500);
-      var myChart = new dimple.chart(svg, data);
-      myChart.setBounds(100, 50, 1000, 300)
-      var x=myChart.addCategoryAxis("x", ["bulan","tahun"]);
-      myChart.addMeasureAxis("y", "berat");
-      var mySeries=myChart.addSeries("kluster", dimple.plot.bar);
-      x.addOrderRule(["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]);
-      x.addGroupOrderRule(["2016","2017"]);
-      mySeries.addOrderRule("kluster");
-      var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
-      var filterValues = dimple.getUniqueValues(data, "kluster");
-      filterValues.forEach(function (f) {
-        myChart.assignColor(f,color[f]);
-      });
-
-      myChart.draw();
-
-
+  var myChart = new dimple.chart(svg, data);
+  myChart.setBounds(100, 50, 1000, 300)
+  var x=myChart.addCategoryAxis("x", ["bulan","tahun"]);
+  myChart.addMeasureAxis("y", "berat");
+  var mySeries=myChart.addSeries("kluster", dimple.plot.bar);
+  x.addOrderRule(["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]);
+  x.addGroupOrderRule(["2016","2017"]);
+  mySeries.addOrderRule("kluster");
+  var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
+  var filterValues = dimple.getUniqueValues(data, "kluster");
+  filterValues.forEach(function (f) {
+    myChart.assignColor(f,color[f]);
+  });
+  myChart.draw();
 }
 function drawBarHarga(data){
+  d3.select("#chartBarHarga").select("svg").remove();
   var svg = dimple.newSvg("#chartBarHarga", 1200, 500);
-      var myChart = new dimple.chart(svg, data);
-      myChart.setBounds(100, 50, 1000, 300)
-      var x=myChart.addCategoryAxis("x", ["bulan","tahun"]);
-      myChart.addMeasureAxis("y", "harga");
-      var mySeries=myChart.addSeries("kluster", dimple.plot.bar);
-      x.addOrderRule(["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]);
-      x.addGroupOrderRule(["2016","2017"]);
-      mySeries.addOrderRule("kluster");
-      var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
-
-      var filterValues = dimple.getUniqueValues(data, "kluster");
-      filterValues.forEach(function (f) {
-        myChart.assignColor(f,color[f]);
-      });
-      myChart.draw();
-
-
+  var myChart = new dimple.chart(svg, data);
+  myChart.setBounds(100, 50, 1000, 300)
+  var x=myChart.addCategoryAxis("x", ["bulan","tahun"]);
+  myChart.addMeasureAxis("y", "harga");
+  var mySeries=myChart.addSeries("kluster", dimple.plot.bar);
+  x.addOrderRule(["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]);
+  x.addGroupOrderRule(["2016","2017"]);
+  mySeries.addOrderRule("kluster");
+  var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
+  var filterValues = dimple.getUniqueValues(data, "kluster");
+  filterValues.forEach(function (f) {
+    myChart.assignColor(f,color[f]);
+  });
+  myChart.draw();
 }
 function drawSse(data){
+  d3.select("#chartSse").select("svg").remove();
   var svg = dimple.newSvg("#chartSse", 1200, 500);
     // Create the chart
       // Latest period only
@@ -76,6 +86,7 @@ function drawSse(data){
       myChart.draw();
 }
 function drawDis(data){
+  d3.select("#chartDis").select("svg").remove();
   var svg = dimple.newSvg("#chartDis", 1200, 400);
     // Create the chart
       // Latest period only
