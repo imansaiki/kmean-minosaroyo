@@ -1,35 +1,21 @@
 var color = ["pink","cyan","lime","olive","purple","red","green","blue","navy","magenta","yellow"];
 function drawCirBerat(data){
   var svg = dimple.newSvg("#chartCirBerat", 1200, 500);
-      var myChart = new dimple.chart(svg, data);
-      myChart.setBounds(100, 50, 1000, 300)
-      var x=myChart.addCategoryAxis("x", ["bulan","tahun"]);
-      myChart.addMeasureAxis("y", "berat");
-      var mySeries=myChart.addSeries("kluster", dimple.plot.bar);
-      var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
-      var filterValues = dimple.getUniqueValues(data, "kluster");
-      filterValues.forEach(function (f) {
-        myChart.assignColor(f,color[f]);
-      });
-
-      myChart.draw();
+  var myChart = new dimple.chart(svg, data);
+  myChart.setBounds(20, 20, 460, 360)
+  myChart.addMeasureAxis("p", "berat");
+  myChart.addSeries("kluster", dimple.plot.pie);
+  myChart.addLegend(500, 20, 90, 300, "left");
+  myChart.draw();
 }
 function drawCirHarga(data){
   var svg = dimple.newSvg("#chartCirHarga", 1200, 500);
-      var myChart = new dimple.chart(svg, data);
-      myChart.setBounds(100, 50, 1000, 300)
-      var x=myChart.addCategoryAxis("x", ["bulan","tahun"]);
-      myChart.addMeasureAxis("y", "berat");
-      var mySeries=myChart.addSeries("kluster", dimple.plot.bar);
-      x.addOrderRule(["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]);
-      x.addGroupOrderRule(["2016","2017"]);
-      var myLegend = myChart.addLegend(1100, 110, 60, 300, "Right");
-      var filterValues = dimple.getUniqueValues(data, "kluster");
-      filterValues.forEach(function (f) {
-        myChart.assignColor(f,color[f]);
-      });
-
-      myChart.draw();
+  var myChart = new dimple.chart(svg, data);
+  myChart.setBounds(20, 20, 460, 360)
+  myChart.addMeasureAxis("p", "harga");
+  myChart.addSeries("kluster", dimple.plot.pie);
+  myChart.addLegend(500, 20, 90, 300, "left");
+  myChart.draw();
 }
 function drawBarBerat(data){
   var svg = dimple.newSvg("#chartBarBerat", 1200, 500);
