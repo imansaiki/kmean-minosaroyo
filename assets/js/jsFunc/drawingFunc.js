@@ -2,6 +2,21 @@ var color = ["pink","cyan","lime","olive","purple","red","green","blue","navy","
 function clearChart() {
 
 }
+function drawJenisCluster(data,klus){
+  d3.select("#chartJenisKluster").select("svg").remove();
+  var svg = dimple.newSvg("#chartJenisKluster", 1200, 500);
+  var newData = dimple.filterData(data, "kluster", klus);
+  var myChart = new dimple.chart(svg, newData);
+  myChart.setBounds(20, 20, 460, 360);
+    myChart.addMeasureAxis("p", "count");
+  myChart.addSeries("jenis", dimple.plot.pie);
+  myChart.addLegend(500, 20, 90, 300, "left");
+  //var filterValues = dimple.getUniqueValues(data, "kluster");
+  //filterValues.forEach(function (f) {
+  //  myChart.assignColor(f,color[f]);
+  //});
+  myChart.draw();
+}
 function drawCirBerat(data){
   d3.select("#chartCirBerat").select("svg").remove();
   var svg = dimple.newSvg("#chartCirBerat", 1200, 500);
@@ -168,6 +183,17 @@ function drawDis(data){
             newFilters.push(e.aggField.slice(-1)[0]);
             d3.select(this).style("opacity", 0.8);
           }
+
+          //DEFAULT
+          //if (hide) {
+            //  d3.select(this).style("opacity", 0.2);
+            //} else {
+            //  newFilters.push(e.aggField.slice(-1)[0]);
+            //  d3.select(this).style("opacity", 0.8);
+            //}
+            // Update the filters
+            //filterValues = newFilters;
+          //.DEFAULT
 
           //cek, kalau filter kosong=> jangan di update!
           if (newFilters.length>0) {

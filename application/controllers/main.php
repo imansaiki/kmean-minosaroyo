@@ -17,7 +17,9 @@ class Main extends CI_Controller
     $this->load->view('chart1');
   }
   function c2(){
-    $this->load->view('chart2');
+    $this->load->model('dataM');
+    $data['kluster']=$this->dataM->getDafKlus();
+    $this->load->view('chart2',$data);
   }
 }
 

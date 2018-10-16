@@ -66,7 +66,8 @@ class dataM extends CI_Model
   function updateDataNormal($id,$harga,$berat){
     $data = array(
         'hperkg_normal' => $harga,
-        'berat_normal' => $berat
+        'berat_normal' => $berat,
+        'normalize'=>1,
       );
       $this->db->flush_cache();
       $this->db->where('id', $id);
@@ -122,6 +123,12 @@ class dataM extends CI_Model
     $this->db->flush_cache();
     $this->db->where('kluster',$centroid);
     $data=$this->db->get('dataikan');
+    return $data->result_array();
+  }
+  function getDafKlus(){
+    $this->db->flush_cache();
+    $this->db->select('id');
+    $data=$this->db->get('centroid');
     return $data->result_array();
   }
 }

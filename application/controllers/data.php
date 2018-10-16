@@ -137,22 +137,29 @@ class data extends CI_Controller
     $jaraknormal=(min($jarak))/(6);
     return $jaraknormal;
   }
+
   function normalisasiData(){
     ini_set('max_execution_time', 300);
+    $start = microtime(true);
     $maxberat=$this->getMaxBerat();
     $minberat=$this->getMinBerat();
     $maxharga=$this->getMaxHarga();
     $minharga=$this->getMinHarga();
     $data=$this->dataM->getHargaBerat();
+    $i=0;
     foreach ($data as $key => $value) {
       $harganormal=(($value->hperkg - $minharga)/($maxharga-$minharga))*10000;
       $beratnormal=(($value->berat - $minberat)/($maxberat-$minberat))*10000;
       $this->dataM->updateDataNormal($value->id,$harganormal,$beratnormal);
+      $i++;
       echo $value->hperkg.'-'.$minharga.'/'.$maxharga.'-'.$minharga.'='.$harganormal;
       echo '<br>';
     }
-
+    echo "<br>total kalkulasi & update database = ".$i." operasi<br>";
+    $time = microtime(true)-$start;
+    echo "Waktu Eksekusi = ".$time."s";
   }
+
   function kMeansLoop($data,$centroid,$loop=0){
     $k=0;
     foreach ($centroid as $key => $value) {
@@ -257,6 +264,10 @@ class data extends CI_Controller
   {
     // code...
     $data=$this->dataM->getSSE();
+    echo json_encode($data);
+  }
+  function getDafKlus(){
+    $data=$this->dataM->getDafKlus();
     echo json_encode($data);
   }
   function getDataD3(){
