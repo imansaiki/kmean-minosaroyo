@@ -131,6 +131,20 @@ class dataM extends CI_Model
     $data=$this->db->get('centroid');
     return $data->result_array();
   }
+  function cekKluster()
+  {
+    $this->db->flush_cache();
+    $this->db->where('kluster',"");
+    $data=$this->db->get('dataikan');
+    return $data->result_array();
+  }
+  function cekNormal()
+  {
+    $this->db->flush_cache();
+    $this->db->where('normalize',"");
+    $data=$this->db->get('dataikan');
+    return $data->result_array();
+  }
 }
 
  ?>

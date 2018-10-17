@@ -152,8 +152,8 @@ class data extends CI_Controller
       $beratnormal=(($value->berat - $minberat)/($maxberat-$minberat))*10000;
       $this->dataM->updateDataNormal($value->id,$harganormal,$beratnormal);
       $i++;
-      echo $value->hperkg.'-'.$minharga.'/'.$maxharga.'-'.$minharga.'='.$harganormal;
-      echo '<br>';
+      //echo $value->hperkg.'-'.$minharga.'/'.$maxharga.'-'.$minharga.'='.$harganormal;
+      //echo '<br>';
     }
     echo "<br>total kalkulasi & update database = ".$i." operasi<br>";
     $time = microtime(true)-$start;
@@ -214,9 +214,9 @@ class data extends CI_Controller
       //input sse dan k disini
       $this->dataM->updateDaftarSSE($k,$sse);
       $this->dataM->updateCentroid($newCentro);
-      echo $loop;
+      echo 'banyaknya perulangan : '.$loop.' kali<br>';
     }
-    return $loop;
+
   }
   function kMeans($k){
     $start = microtime(true);
@@ -228,7 +228,7 @@ class data extends CI_Controller
     }
     $loop=$this->kMeansLoop($data,$centroid);
     $time = microtime(true)-$start;
-    echo $time;
+    echo 'waktu eksekusi : '.$time.'s';
     echo $loop;
   }
   function getData(){
@@ -280,7 +280,9 @@ class data extends CI_Controller
   }
 
   function input(){
-    $this->load->view('input');
+    $data['normal']=$this->dataM->cekNormal();
+    $data['kluster']=$this->dataM->cekKluster();
+    $this->load->view('input',$data);
   }
 
 }
