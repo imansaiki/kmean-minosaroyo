@@ -145,6 +145,14 @@ class dataM extends CI_Model
     $data=$this->db->get('dataikan');
     return $data->result_array();
   }
+  function getJumlahData(){
+    $this->db->flush_cache();
+    $this->db->select('tahun, COUNT(id) as total');
+    $this->db->group_by("tahun");
+    $this->db->from('dataikan');
+    $data=$this->db->get();
+    return $data->result_array();
+  }
 }
 
  ?>

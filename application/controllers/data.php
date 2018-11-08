@@ -278,10 +278,15 @@ class data extends CI_Controller
     }
     echo json_encode($korditat);
   }
+  function getJumlahData()
+  {
+    echo json_encode($this->dataM->getJumlahData());
+  }
 
   function input(){
     $data['normal']=$this->dataM->cekNormal();
     $data['kluster']=$this->dataM->cekKluster();
+    $this->load->view('head');
     $this->load->view('input',$data);
   }
 
