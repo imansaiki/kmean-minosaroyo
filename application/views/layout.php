@@ -4,7 +4,7 @@
     <!-- 1st Row -->
     <div class="row">
       <div class="section">
-        <h4>Distribusi</h4>
+        <h4>Distribusi Data</h4>
         <div class="divider">
         </div>
       </div>
@@ -86,7 +86,7 @@
     <!-- 2nd Row -->
     <div class="row">
       <div class="section">
-        <h4>Distribusi</h4>
+        <h4>Distribusi Kluster</h4>
         <div class="divider">
         </div>
       </div>
