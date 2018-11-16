@@ -10,7 +10,9 @@
       </div>
       <div class="col l8">
         <div class="card-panel">
-          >Distribusi
+          <div class="valign-wrapper">
+            <i class="material-icons">assessment</i> Distribusi
+          </div>
           <div class="center-align" id="circle-distrib">
             <div class="preloader-wrapper big active">
               <div class="spinner-layer spinner-blue-only">
@@ -33,7 +35,9 @@
 
 
           <div class="card-panel">
-            >SSE
+            <div class="valign-wrapper">
+              <i class="material-icons">assessment</i>SSE
+            </div>
             <div class="center-align" id="circle-SSE">
               <div class="preloader-wrapper big active">
                 <div class="spinner-layer spinner-blue-only">
@@ -56,7 +60,9 @@
 
 
           <div class="card-panel">
-            >Jumlah Data
+            <div class="valign-wrapper">
+              <i class="material-icons">assessment</i>Jumlah Data
+            </div>
             <div class="center-align" id="circle-jumlahData">
               <div class="preloader-wrapper big active">
                 <div class="spinner-layer spinner-blue-only">
@@ -92,6 +98,9 @@
       </div>
       <div class="col l8">
         <div class="card-panel">
+          <div class="valign-wrapper">
+            <i class="material-icons">assessment</i>SSE
+          </div>
           <div class="" id="drawBul">
 
           </div>
@@ -99,35 +108,56 @@
       </div>
       <div class="col l4">
         <div class="card-panel">
-          <div id="empat">
+          <div class="valign-wrapper">
+            <i class="material-icons">assessment</i>SSE
+          </div>
+          <div id="drawCirBul">
 
           </div>
         </div>
       </div>
-      <div class="col l3">
+      <div class="col l4">
         <div class="card-panel">
-          Kontrol
-          <div class="input-field">
-            <select class="" name="" id="" >
-              <option value="1">Bar</option>
-              <option value="2">Line</option>
-            </select>
-            <label for="">Grafik</label>
+          <div class="valign-wrapper">
+            <i class="material-icons">assessment</i>SSE
           </div>
-          <div class="input-field">
-            <select class="" name="" id="" >
-              <option value="1">2016</option>
-              <option value="2">2017</option>
-            </select>
-            <label for="">Tahun</label>
+          <div>
+            <label>
+              <input name="jenisGrap" type="radio" value="bar" checked />
+              <span>Bar</span>
+            </label>
+            <label>
+              <input name="jenisGrap" type="radio" value="line"  />
+              <span>Line</span>
+            </label>
           </div>
-          <div class="input-field">
-            <select class="" name="" id="" >
-              <option value="1">Penjualan</option>
-              <option value="2">Produksi</option>
-            </select>
-            <label for="">Jenis Data  </label>
+          <div class="divider"></div>
+          <div>
+            <label>
+              <input name="tahunDis" type="radio" value="" checked/>
+              <span>Semua</span>
+            </label>
+            <label>
+              <input name="tahunDis" type="radio" value="2016" />
+              <span>2016</span>
+            </label>
+            <label>
+              <input name="tahunDis" type="radio" value="2017"  />
+              <span>2017</span>
+            </label>
           </div>
+          <div class="divider"></div>
+          <div>
+            <label>
+              <input name="jenisDataDis" type="radio" value="harga" checked />
+              <span>Penjualan</span>
+            </label>
+            <label>
+              <input name="jenisDataDis" type="radio" value="berat"  />
+              <span>Produksi</span>
+            </label>
+          </div>
+          <div class="divider"></div>
         </div>
       </div>
     </div>
@@ -140,32 +170,23 @@
         <div class="divider">
         </div>
       </div>
-      <div class="col l5">
+      <div class="col l6">
         <div class="card-panel">
-
+          <div id="circleKluster"></div>
         </div>
       </div>
-      <div class="col l7">
-        <div class="row">
-          <div class="col l12">
-            <div class="card-panel">
-
-            </div>
-          </div>
-          <div class="col l4">
-            <div class="card-panel">
-
-            </div>
-          </div>
-          <div class="col l4">
-            <div class="card-panel">
-
-            </div>
-          </div>
-          <div class="col l4">
-            <div class="card-panel">
-
-            </div>
+      <div class="col l6">
+        <div class="card-panel">
+          <div class="input-field" id="kluster-selector">
+            <select id="selectorklus" >
+              <option value="" disabled selected>--PILIH--</option>
+            <?php if (isset($kluster)): ?>
+              <?php foreach ($kluster as $key => $value): ?>
+                <option value="<?php echo $value['id']; ?>"><?php echo $value['id']; ?></option>
+              <?php endforeach; ?>
+            <?php endif; ?>
+            </select>
+            <label>Pilih Kluster</label>
           </div>
         </div>
       </div>
@@ -181,7 +202,22 @@ $(document).ready(function () {
    .then(data=>{
      console.log('data berhasil diambil');
      drawDis(data,'drawDis');
-     drawBar(data,'drawBul');
+     drawCirKluster(data,'drawCirBul','harga','');
+     drawDisKluster(data,'drawBul','bar','harga','');
+     drawJenisCluster(data,'circleKluster','0','count');
+     $('#selectorklus').change(function(){
+       var klusterTerpilih=$(this).val();
+       console.log(klusterTerpilih);
+       drawJenisCluster(data,'circleKluster',klusterTerpilih,'count');
+     })
+     $('input[type=radio]').change(function(){
+       console.log('ganti');
+       var tahun= $('input[type=radio][name=tahunDis]:checked').val();
+       var jenisGrap= $('input[type=radio][name=jenisGrap]:checked').val();
+       var yAxis= $('input[type=radio][name=jenisDataDis]:checked').val();
+       drawCirKluster(data,'drawCirBul',yAxis,tahun);
+       drawDisKluster(data,'drawBul',jenisGrap,yAxis,tahun);
+     })
    });
    fetch("<?php echo base_url('data/getsse/')?>")
    .then(res=>res.json())
@@ -214,13 +250,6 @@ $(document).ready(function () {
     $('#circle-jumlahData').hide();
    });
 
-   fetch("<?php echo base_url('data/getdata2/')?>")
-   .then(res=>res.json())
-   .then(data=>{
-     console.log('data berhasil diambil');
-
-       pieDraw(data,'empat');
-   });
    function pieDraw(data,id){
      var svg = dimple.newSvg("#"+id, '100%', 200);
      var myChart = new dimple.chart(svg, data);

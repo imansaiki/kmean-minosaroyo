@@ -5,19 +5,33 @@
 class dataM extends CI_Model
 {
   function inputDataIkan($nama,$beratot,$hargatot,$hargaperkg,$bulan,$tahun){
+    $dafBulan= array('Januari' => '01',
+                  'Februari' => '02',
+                  'Maret' => '03',
+                  'April' => '04',
+                  'Mei' => '05',
+                  'Juni' => '06',
+                  'Juli' => '07',
+                  'Agustus' => '08',
+                  'September' => '09',
+                  'Oktober' => '10',
+                  'November' => '11',
+                  'Desember' => '12');
     $this->db->flush_cache();
     $this->db->where('jenis', $nama);
     $this->db->where('bulan', $bulan);
     $this->db->where('tahun', $tahun);
     $this->db->delete('dataikan');
     $this->db->flush_cache();
+    $date=$tahun.'-'.$dafBulan[$bulan].'-01';
     $data = array(
         'jenis' => $nama,
         'berat'  => $beratot,
         'harga'  => $hargatot,
         'hperkg' => $hargaperkg,
         'bulan'  => $bulan,
-        'tahun'  => $tahun
+        'tahun'  => $tahun,
+        'date'   => $date
         );
     $this->db->insert('dataikan',$data);
   }
@@ -97,6 +111,8 @@ class dataM extends CI_Model
   }
   function getDataIkanAll(){
     $this->db->flush_cache();
+    $this->db->select();
+    $this->db->order_by('tahun ASC');
     $query = $this->db->get('dataikan');
     return $query->result_array();
   }
