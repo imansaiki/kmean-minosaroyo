@@ -260,6 +260,19 @@ class data extends CI_Controller
     $data=$this->dataM->getDataIkanAll();
     echo json_encode($data);
   }
+  function expCsv(){
+    $data=$this->dataM->getDataIkanAll();
+    $df = fopen("php://output", 'w');
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="export.csv"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    fputcsv($df, array_keys(reset($data)));
+    foreach ($data as $row) {
+      fputcsv($df, $row);
+    }
+    fclose($df);
+  }
   function getSSE()
   {
     // code...
