@@ -267,9 +267,9 @@ class data extends CI_Controller
     header('Content-Disposition: attachment; filename="export.csv"');
     header('Pragma: no-cache');
     header('Expires: 0');
-    fputcsv($df, array_keys(reset($data)));
+    fputcsv($df, array_keys(reset($data)),';');
     foreach ($data as $row) {
-      fputcsv($df, $row);
+      fputcsv($df, $row,';');
     }
     fclose($df);
   }
