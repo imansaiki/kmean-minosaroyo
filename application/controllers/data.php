@@ -161,21 +161,27 @@ class data extends CI_Controller
   }
 
   function kMeansLoop($data,$centroid,$loop=0){
+    //k counter loop
     $k=0;
+
+    //inisialisasi array anggota kluster
     foreach ($centroid as $key => $value) {
         $anggotaKluster[$key]=[];
         $k++;
     }
+
     // init total sse disini
     $sse=0;
+
     foreach ($data as $keyData => $valueData) {
-      # code...
+
       foreach ($centroid as $keyCentro => $valueCentro) {
-        # code...
+        //hitung jarak antara data dengan tiap centroid
         $xVal=pow(($valueCentro['x']-$valueData['berat_normal']),2);
         $yVal=pow(($valueCentro['y']-$valueData['hperkg_normal']),2);
         $jarak[$keyCentro]=sqrt($xVal+$yVal);
       }
+      //set data pada centroid terdekat
       $klusterPilih=array_search(min($jarak),$jarak);
       $data[$keyData]['kluster']= $klusterPilih;
       $anggotaKluster[$klusterPilih]['x'][]=$valueData['berat_normal'];
@@ -185,7 +191,7 @@ class data extends CI_Controller
     }
     $diff=0;
     foreach ($centroid as $key => $value) {
-      # code...
+      //kondisi jika centroid tidak dapat anggota, maka set centroid baru
       if(empty($anggotaKluster[$key])){
         echo 'empty'.$key.'<br>';
         echo $data[rand((count($data)-1),0)]['berat_normal'];
@@ -195,6 +201,7 @@ class data extends CI_Controller
         $diff++;
 
       }else{
+        //cek apakah centroid berubah
         $newCentro[$key]['x']=array_sum($anggotaKluster[$key]['x'])/count($anggotaKluster[$key]['x']);
         $newCentro[$key]['y']=array_sum($anggotaKluster[$key]['y'])/count($anggotaKluster[$key]['y']);
         if($newCentro[$key]['x']!=$value['x']||$newCentro[$key]['y']!=$value['y']){
@@ -202,10 +209,12 @@ class data extends CI_Controller
         }
       }
     }
+    //jika ada perubahan centroid, ulang
     if($diff>0){
       $loop++;
       $this->kMeansLoop($data,$newCentro,$loop);
     }else{
+    //jika tidak ada perubahan centroid
       foreach ($data as $key => $value) {
         # code...
         $this->dataM->updateDataKluster($value['id'],$value['kluster']);
@@ -218,14 +227,19 @@ class data extends CI_Controller
     }
 
   }
+  // Fungsi inisialisasi Centroid awal
   function kMeans($k){
     $start = microtime(true);
+    //set timeout
     ini_set('max_execution_time', 300);
+    //ambil data sumber
     $data=$this->dataM->getDataIkan();
     for($i=0;$i<$k;$i++){
+      //set centroid awal, nilai random dari data sumber
       $centroid[$i]['x']=$data[rand((count($data)-1),0)]['berat_normal'];
       $centroid[$i]['y']=$data[rand((count($data)-1),0)]['hperkg_normal'];
     }
+    //mulai rekursif kmeans
     $loop=$this->kMeansLoop($data,$centroid);
     $time = microtime(true)-$start;
     echo 'waktu eksekusi : '.$time.'s';
